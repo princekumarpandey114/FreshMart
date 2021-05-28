@@ -1,0 +1,8 @@
+{
+  "name": "Smart Shop",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular",
+  "id": "f233db5e"
+}
