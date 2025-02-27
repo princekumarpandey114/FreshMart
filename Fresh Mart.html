@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="pageTitle">🍅 फ्रेश मार्ट 🍎 - ताज़ा फल और सब्जियाँ आपके द्वार तक!</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        /* मौजूदा स्टाइल्स वही रहेंगी, कोई बदलाव नहीं */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            padding: 20px;
+            color: #333;
+        }
+
+        .header {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #4CAF50, #2e7d32);
+            color: white;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .navbar {
+            background: #1e1e1e;
+            overflow: hidden;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .navbar a {
+            color: white;
+            padding: 15px 25px;
+            text-decoration: none;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+        }
+
+        .navbar a:hover {
+            background: #ddd;
+            color: #333;
+        }
+
+        .navbar a.active {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .home-section, .dashboard {
+            margin: 20px 0;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .slider {
+            position: relative;
+            width: 100%;
+            max-width: 900px;
+            margin: 20px auto;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .slides {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .slide {
+            min-width: 100%;
+            position: relative;
+        }
+
+        .slide img {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .slide-text {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            color: white;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 1.3em;
+        }
+
+        .category {
+            margin: 20px 0;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .products {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .product {
+            background: #fff;
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .product:hover {
+            transform: translateY(-5px);
+        }
+
+        .product img {
+            width: 160px;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .cart {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin: 5px;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background: #388e3c;
+        }
+
+        .weight-options {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .weight-btn {
+            padding: 8px 15px;
+            font-size: 0.9em;
+            background: #e0e0e0;
+            color: #333;
+            border-radius: 20px;
+        }
+
+        .weight-btn:hover {
+            background: #d0d0d0;
+        }
+
+        .address-form, .admin-form, .add-product-form, .customize-form, .payment-form, .bill-form, .customer-form, .customer-profile, .admin-dashboard, .customer-dashboard {
+            display: none;
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+        }
+
+        .edit-price {
+            display: none;
+            margin-top: 10px;
+        }
+
+        #logoutBtn, #customerLogoutBtn {
+            display: none;
+            background: #f44336;
+        }
+
+        #logoutBtn:hover, #customerLogoutBtn:hover {
+            background: #d32f2f;
+        }
+
+        #bannerImg {
+            width: 100%;
+            max-height: 220px;
+            object-fit: cover;
+            border-radius: 15px;
+        }
+
+        #upiQrCode, #bankQrCode, #paymentQrCode {
+            width: 220px;
+            height: 220px;
+            margin: 15px auto;
+            display: block;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+        }
+
+        .out-of-stock {
+            color: #f44336;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .dashboard h2 {
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+
+        .dashboard-section {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .dashboard-section h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .dashboard-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .dashboard-table th, .dashboard-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .dashboard-table th {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .dashboard-table tr:hover {
+            background: #f1f1f1;
+        }
+    </style>
+</head>
+<body>
+    <!-- मौजूदा HTML संरचना -->
+    <div class="header" id="headerSection">
+        <img id="bannerImg" src="" alt="Banner" style="display: none;">
+        <h1 id="headerTitle" style="font-size: 2.5em; margin-bottom: 10px;">🍅 फ्रेश मार्ट 🍎</h1>
+        <p id="headerSubtitle" style="font-size: 1.2em;">ताज़ा फल और सब्जियाँ आपके द्वार तक!</p>
+        <p id="headerInfo"><br> दुकान नंबर 205, फेज 5, मोहाली ,Nagar, Punjab, 160055 <br> मालिक का नाम (प्रिंस कुमार पांडे)<br> संपर्क :- 9463860032 </br></p>
+        <button id="adminBtn" onclick="showAdminForm()">🛠️ Admin LogIn </button>
+        <button id="logoutBtn" onclick="logoutAdmin()">🚪 लॉगआउट</button>
+        <button id="customerLoginBtn" onclick="showCustomerForm('login')">👤 कस्टमर लॉगिन</button>
+        <button id="customerRegisterBtn" onclick="showCustomerForm('register')">📝 रजिस्टर</button>
+        <button id="customerLogoutBtn" onclick="logoutCustomer()">🚪 कस्टमर लॉगआउट</button>
+    </div>
+
+    <div class="navbar" id="navbar">
+        <a href="#" class="active" onclick="showSection('home')">होम</a>
+        <a href="#" onclick="showSection('fruits')">फल</a>
+        <a href="#" onclick="showSection('vegetables')">सब्जियाँ</a>
+        <a href="#" id="profileLink" onclick="showSection('customerDashboard')" style="display: none;">डैशबोर्ड</a>
+        <a href="#" id="adminDashboardLink" onclick="showSection('adminDashboard')" style="display: none;">एडमिन डैशबोर्ड</a>
+    </div>
+
+    <!-- होम सेक्शन -->
+    <div class="home-section" id="homeSection">
+        <h2 id="homeTitle">हमारे बारे में</h2>
+        <p id="homeInfo">फ्रेश मार्ट में आपका स्वागत है! हम ताज़ा और स्वस्थ फल और सब्जियाँ सीधे आपके द्वार तक पहुँचाते हैं। हमारा लक्ष्य है कि आपको सबसे अच्छी गुणवत्ता और ताज़गी मिले। हमारे पास विभिन्न प्रकार के फल और सब्जियाँ उपलब्ध हैं जो हर मौसम में आपके लिए चुनिंदा हैं।</p>
+        <div class="slider" id="slider">
+            <div class="slides" id="slides">
+                <div class="slide">
+                    <img src="images/mango.jpg" alt="आम" id="slideImg1">
+                    <div class="slide-text" id="slideText1">आम - गर्मियों का राजा, स्वाद और सेहत से भरपूर!</div>
+                </div>
+                <div class="slide">
+                    <img src="images/tomato.jpg" alt="टमाटर" id="slideImg2">
+                    <div class="slide-text" id="slideText2">टमाटर - हर रसोई की शान, ताज़गी का खजाना!</div>
+                </div>
+                <div class="slide">
+                    <img src="images/kiwi.jpg" alt="कीवी" id="slideImg3">
+                    <div class="slide-text" id="slideText3">कीवी - विटामिन C का भंडार, स्वाद में अनोखा!</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- फल सेक्शन -->
+    <div class="category" id="fruitsSection" style="display: none;">
+        <h2>फल (500g/1kg)</h2>
+        <div class="products" id="fruits"></div>
+        <div class="cart" id="fruitsCartSection">
+            <h2>🛒 आपकी टोकरी</h2>
+            <div id="cartItems"></div>
+            <p>सबटोटल: ₹<span id="subtotal">0</span></p>
+            <p>डिस्काउंट: ₹<span id="discount">0</span></p>
+            <p>डिलीवरी चार्ज: ₹<span id="deliveryCharge">30</span></p>
+            <p style="font-weight: bold;">कुल राशि: ₹<span id="total">0</span></p>
+            <button onclick="showAddressForm()">✅ ऑर्डर पूरा करें</button>
+        </div>
+    </div>
+
+    <!-- सब्जियाँ सेक्शन -->
+    <div class="category" id="vegetablesSection" style="display: none;">
+        <h2>सब्जियाँ (500g/1kg)</h2>
+        <div class="products" id="vegetables"></div>
+        <div class="cart" id="vegetablesCartSection">
+            <h2>🛒 आपकी टोकरी</h2>
+            <div id="cartItemsVegetables"></div>
+            <p>सबटोटल: ₹<span id="subtotalVegetables">0</span></p>
+            <p>डिस्काउंट: ₹<span id="discountVegetables">0</span></p>
+            <p>डिलीवरी चार्ज: ₹<span id="deliveryChargeVegetables">30</span></p>
+            <p style="font-weight: bold;">कुल राशि: ₹<span id="totalVegetables">0</span></p>
+            <button onclick="showAddressForm()">✅ ऑर्डर पूरा करें</button>
+        </div>
+    </div>
+
+    <!-- एडमिन डैशबोर्ड -->
+    <div class="admin-dashboard" id="adminDashboardSection" style="display: none;">
+        <h2>एडमिन डैशबोर्ड</h2>
+        <div class="dashboard-section">
+            <h3>कुल ऑर्डर</h3>
+            <p id="totalOrders">0</p>
+        </div>
+        <div class="dashboard-section">
+            <h3>कुल आय</h3>
+            <p id="totalRevenue">₹0</p>
+        </div>
+        <div class="dashboard-section">
+            <h3>कस्टमर रिकॉर्ड</h3>
+            <table class="dashboard-table">
+                <thead>
+                    <tr>
+                        <th>नाम</th>
+                        <th>मोबाइल</th>
+                        <th>ऑर्डर</th>
+                        <th>राशि</th>
+                        <th>दिनांक</th>
+                        <th>पता</th>
+                        <th>बिल (PDF)</th>
+                    </tr>
+                </thead>
+                <tbody id="adminCustomerRecords"></tbody>
+            </table>
+        </div>
+        <div class="dashboard-section">
+            <h3>प्रोडक्ट स्टॉक</h3>
+            <table class="dashboard-table">
+                <thead>
+                    <tr>
+                        <th>नाम</th>
+                        <th>500g कीमत</th>
+                        <th>1kg कीमत</th>
+                        <th>डिस्काउंट</th>
+                        <th>स्टॉक</th>
+                    </tr>
+                </thead>
+                <tbody id="adminStockRecords"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- कस्टमर डैशबोर्ड -->
+    <div class="customer-dashboard" id="customerDashboardSection" style="display: none;">
+        <h2>आपका डैशबोर्ड</h2>
+        <div class="dashboard-section">
+            <h3>प्रोफाइल</h3>
+            <p id="customerDashInfo"></p>
+        </div>
+        <div class="dashboard-section">
+            <h3>खरीद इतिहास</h3>
+            <table class="dashboard-table">
+                <thead>
+                    <tr>
+                        <th>ऑर्डर</th>
+                        <th>राशि</th>
+                        <th>दिनांक</th>
+                        <th>पता</th>
+                        <th>पेमेंट स्टेटस</th>
+                        <th>बिल (PDF)</th>
+                    </tr>
+                </thead>
+                <tbody id="customerPurchaseHistory"></tbody>
+            </table>
+        </div>
+        <div class="dashboard-section">
+            <h3>वर्तमान ऑर्डर</h3>
+            <div id="currentOrderDetails"></div>
+        </div>
+    </div>
+
+    <div class="address-form" id="addressForm">
+        <h3>डिलीवरी का पता</h3>
+        <input type="text" id="name" placeholder="आपका नाम">
+        <input type="tel" id="mobile" placeholder="मोबाइल नंबर">
+        <input type="text" id="address" placeholder="पूरा पता">
+        <button onclick="requestLocation()">📍 लोकेशन शेयर करें</button>
+        <button onclick="showPaymentForm()">💳 ऑनलाइन पेमेंट</button>
+        <button onclick="placeOrder()">📲 व्हाट्सएप्प पर ऑर्डर करें</button>
+    </div>
+
+    <div class="payment-form" id="paymentForm">
+        <h3>ऑनलाइन पेमेंट</h3>
+        <p>कुल राशि: ₹<span id="paymentTotal">0</span></p>
+        <h4>UPI पेमेंट</h4>
+        <img id="upiQrCode" src="" alt="UPI QR Code">
+        <p>ऊपर दिए गए QR कोड को स्कैन करें।</p>
+        <h4>बैंक अकाउंट</h4>
+        <p id="bankDetails">बैंक डिटेल्स यहाँ दिखेंगी।</p>
+        <img id="bankQrCode" src="" alt="Bank QR Code">
+        <p>ऊपर दिए गए QR कोड को स्कैन करें।</p>
+        <h4>ऑर्डर QR कोड</h4>
+        <img id="paymentQrCode" src="" alt="Order QR Code">
+        <p>इस ऑर्डर के लिए यूनिक QR कोड स्कैन करें।</p>
+        <button onclick="confirmPayment()">✅ पेमेंट पूरा करें</button>
+    </div>
+
+    <div class="bill-form" id="billForm">
+        <h3>आपका बिल</h3>
+        <p id="billDetails"></p>
+        <button onclick="document.getElementById('billForm').style.display = 'none'">बंद करें</button>
+    </div>
+
+    <div class="customer-form" id="customerLoginForm">
+        <h3>कस्टमर लॉगिन</h3>
+        <input type="text" id="loginMobile" placeholder="मोबाइल नंबर या जीमेल">
+        <input type="password" id="loginPassword" placeholder="पासवर्ड">
+        <button onclick="loginCustomer()">लॉगिन</button>
+        <button onclick="googleLogin()">Google से लॉगिन करें</button>
+    </div>
+
+    <div class="customer-form" id="customerRegisterForm">
+        <h3>कस्टमर रजिस्टर</h3>
+        <input type="text" id="registerName" placeholder="आपका नाम">
+        <input type="tel" id="registerMobile" placeholder="मोबाइल नंबर">
+        <input type="email" id="registerEmail" placeholder="जीमेल">
+        <input type="password" id="registerPassword" placeholder="पासवर्ड">
+        <button onclick="registerCustomer()">रजिस्टर</button>
+        <button onclick="googleLogin()">Google से रजिस्टर करें</button>
+    </div>
+
+    <div class="admin-form" id="adminForm">
+        <h3>🛠️ Admin Panel</h3>
+        <input type="password" id="adminPassword" placeholder="पासवर्ड डालें">
+        <button onclick="verifyAdmin()">लॉगिन करें</button>
+    </div>
+
+    <div class="add-product-form" id="addProductForm">
+        <h3>नया प्रोडक्ट जोड़ें</h3>
+        <input type="text" id="newProductName" placeholder="प्रोडक्ट का नाम (जैसे: आम (Mango))">
+        <select id="newProductCategory">
+            <option value="fruit">फल</option>
+            <option value="vegetable">सब्जी</option>
+        </select>
+        <input type="number" id="newPrice500g" placeholder="500g की कीमत">
+        <input type="number" id="newPrice1kg" placeholder="1kg की कीमत">
+        <input type="number" id="newDiscount500g" placeholder="500g डिस्काउंट कीमत (वैकल्पिक)">
+        <input type="number" id="newDiscount1kg" placeholder="1kg डिस्काउंट कीमत (वैकल्पिक)">
+        <input type="file" id="newProductImage" accept="image/*">
+        <label><input type="checkbox" id="newOutOfStock"> आउट ऑफ स्टॉक</label>
+        <button onclick="addNewProduct()">प्रोडक्ट जोड़ें</button>
+    </div>
+
+    <div class="customize-form" id="customizeForm">
+        <h3>साइट कस्टमाइज़ करें</h3>
+        <h4>हेडर</h4>
+        <input type="text" id="customTitle" placeholder="नया टाइटल (जैसे: फ्रेश मार्ट)">
+        <input type="text" id="customSubtitle" placeholder="नया सबटाइटल (जैसे: ताज़ा फल और सब्जियाँ)">
+        <input type="text" id="customInfo" placeholder="नया स्टोर जानकारी">
+        <input type="file" id="customBanner" accept="image/*" onchange="previewBanner()">
+        <input type="color" id="customColor" value="#4CAF50" placeholder="हेडर का रंग">
+
+        <h4>होम सेक्शन</h4>
+        <input type="text" id="homeCustomTitle" placeholder="होम टाइटल (जैसे: हमारे बारे में)">
+        <textarea id="homeCustomInfo" placeholder="होम जानकारी" rows="4"></textarea>
+        <h5>स्लाइडर 1</h5>
+        <input type="file" id="slideCustomImg1" accept="image/*" onchange="previewSlide(1)">
+        <input type="text" id="slideCustomText1" placeholder="स्लाइड 1 टेक्स्ट">
+        <h5>स्लाइडर 2</h5>
+        <input type="file" id="slideCustomImg2" accept="image/*" onchange="previewSlide(2)">
+        <input type="text" id="slideCustomText2" placeholder="स्लाइड 2 टेक्स्ट">
+        <h5>स्लाइडर 3</h5>
+        <input type="file" id="slideCustomImg3" accept="image/*" onchange="previewSlide(3)">
+        <input type="text" id="slideCustomText3" placeholder="स्लाइड 3 टेक्स्ट">
+
+        <h4>पेमेंट ऑप्शन्स</h4>
+        <input type="file" id="upiQrInput" accept="image/*" onchange="previewUpiQr()">
+        <input type="text" id="bankAccountNo" placeholder="बैंक अकाउंट नंबर">
+        <input type="text" id="bankIfsc" placeholder="IFSC कोड">
+        <input type="file" id="bankQrInput" accept="image/*" onchange="previewBankQr()">
+
+        <button onclick="updateAll()">सहेजें</button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.4.4/build/qrcode.min.js"></script>
+    <script>
+        let products = JSON.parse(localStorage.getItem('products')) || [
+            {id: 1, name: "आम (Mango)", category: "fruit", image: "images/mango.jpg", price500g: 60, price1kg: 110, discount500g: 0, discount1kg: 0, outOfStock: false},
+            {id: 2, name: "केला (Banana)", category: "fruit", image: "images/banana.jpg", price500g: 20, price1kg: 35, discount500g: 0, discount1kg: 0, outOfStock: false},
+            {id: 25, name: "आलू (Potato)", category: "vegetable", image: "images/potato.jpg", price500g: 15, price1kg: 25, discount500g: 0, discount1kg: 0, outOfStock: false},
+            {id: 26, name: "टमाटर (Tomato)", category: "vegetable", image: "images/tomato.jpg", price500g: 20, price1kg: 35, discount500g: 0, discount1kg: 0, outOfStock: false}
+        ];
+
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        let paymentRecords = JSON.parse(localStorage.getItem('paymentRecords')) || [];
+        let customers = JSON.parse(localStorage.getItem('customers')) || [];
+        let currentCustomer = null;
+        const DELIVERY_CHARGE = 30;
+        const ADMIN_PASSWORD = "Pandey@123";
+        let isAdminMode = false;
+        const GOOGLE_CLIENT_ID = "YOUR_GOOGLE_CLIENT_ID"; // Google API Console से प्राप्त करें
+        const REDIRECT_URI = "YOUR_REDIRECT_URI"; // आपके एप्लिकेशन का URI
+        const SHOP_ADDRESS = "दुकान नंबर 205, फेज 5, मोहाली, Nagar, Punjab, 160055\nमालिक: प्रिंस कुमार पांडे\nसंपर्क: 9463860032";
+
+        // डेटा लोड करें
+        function loadData() {
+            const headerData = JSON.parse(localStorage.getItem('headerData')) || {};
+            const homeData = JSON.parse(localStorage.getItem('homeData')) || {};
+            const sliderData = JSON.parse(localStorage.getItem('sliderData')) || [
+                { img: "images/mango.jpg", text: "आम - गर्मियों का राजा, स्वाद और सेहत से भरपूर!" },
+                { img: "images/tomato.jpg", text: "टमाटर - हर रसोई की शान, ताज़गी का खजाना!" },
+                { img: "images/kiwi.jpg", text: "कीवी - विटामिन C का भंडार, स्वाद में अनोखा!" }
+            ];
+            const paymentData = JSON.parse(localStorage.getItem('paymentData')) || {};
+
+            if (headerData.title) document.getElementById('headerTitle').textContent = headerData.title;
+            if (headerData.subtitle) document.getElementById('headerSubtitle').textContent = headerData.subtitle;
+            if (headerData.info) document.getElementById('headerInfo').innerHTML = `<br>${headerData.info.replace(/\n/g, '<br>')}`;
+            if (headerData.color) document.getElementById('headerSection').style.backgroundColor = headerData.color;
+            if (headerData.banner) {
+                document.getElementById('bannerImg').src = headerData.banner;
+                document.getElementById('bannerImg').style.display = 'block';
+            }
+
+            if (homeData.title) document.getElementById('homeTitle').textContent = homeData.title;
+            if (homeData.info) document.getElementById('homeInfo').textContent = homeData.info;
+
+            for (let i = 0; i < sliderData.length; i++) {
+                document.getElementById(`slideImg${i + 1}`).src = sliderData[i].img;
+                document.getElementById(`slideText${i + 1}`).textContent = sliderData[i].text;
+            }
+
+            if (paymentData.upiQr) document.getElementById('upiQrCode').src = paymentData.upiQr;
+            if (paymentData.bankQr) document.getElementById('bankQrCode').src = paymentData.bankQr;
+            if (paymentData.bankAccountNo && paymentData.bankIfsc) {
+                document.getElementById('bankDetails').textContent = `अकाउंट नंबर: ${paymentData.bankAccountNo}, IFSC: ${paymentData.bankIfsc}`;
+            }
+
+            currentCustomer = JSON.parse(localStorage.getItem('currentCustomer')) || null;
+            updateCustomerUI();
+        }
+
+        // कस्टमर UI अपडेट करें
+        function updateCustomerUI() {
+            if (currentCustomer) {
+                document.getElementById('customerLoginBtn').style.display = 'none';
+                document.getElementById('customerRegisterBtn').style.display = 'none';
+                document.getElementById('customerLogoutBtn').style.display = 'inline-block';
+                document.getElementById('profileLink').style.display = 'inline-block';
+            } else {
+                document.getElementById('customerLoginBtn').style.display = 'inline-block';
+                document.getElementById('customerRegisterBtn').style.display = 'inline-block';
+                document.getElementById('customerLogoutBtn').style.display = 'none';
+                document.getElementById('profileLink').style.display = 'none';
+            }
+            if (isAdminMode) {
+                document.getElementById('adminDashboardLink').style.display = 'inline-block';
+            } else {
+                document.getElementById('adminDashboardLink').style.display = 'none';
+            }
+        }
+
+        // सेक्शन दिखाएँ/छिपाएँ
+        function showSection(section) {
+            const homeSection = document.getElementById('homeSection');
+            const fruitsSection = document.getElementById('fruitsSection');
+            const vegetablesSection = document.getElementById('vegetablesSection');
+            const adminDashboardSection = document.getElementById('adminDashboardSection');
+            const customerDashboardSection = document.getElementById('customerDashboardSection');
+            const navbarLinks = document.getElementById('navbar').getElementsByTagName('a');
+
+            for (let link of navbarLinks) {
+                link.classList.remove('active');
+            }
+
+            homeSection.style.display = 'none';
+            fruitsSection.style.display = 'none';
+            vegetablesSection.style.display = 'none';
+            adminDashboardSection.style.display = 'none';
+            customerDashboardSection.style.display = 'none';
+
+            if (section === 'home') {
+                homeSection.style.display = 'block';
+                navbarLinks[0].classList.add('active');
+            } else if (section === 'fruits') {
+                fruitsSection.style.display = 'block';
+                navbarLinks[1].classList.add('active');
+            } else if (section === 'vegetables') {
+                vegetablesSection.style.display = 'block';
+                navbarLinks[2].classList.add('active');
+            } else if (section === 'customerDashboard' && currentCustomer) {
+                customerDashboardSection.style.display = 'block';
+                navbarLinks[3].classList.add('active');
+                showCustomerDashboard();
+            } else if (section === 'adminDashboard' && isAdminMode) {
+                adminDashboardSection.style.display = 'block';
+                navbarLinks[4].classList.add('active');
+                showAdminDashboard();
+            }
+
+            if (!isAdminMode) renderProducts();
+        }
+
+        // प्रोडक्ट्स और कार्ट दिखाएँ/छिपाएँ
+        function renderProducts() {
+            const fruitsContainer = document.getElementById('fruits');
+            const vegetablesContainer = document.getElementById('vegetables');
+            const fruitsCartSection = document.getElementById('fruitsCartSection');
+            const vegetablesCartSection = document.getElementById('vegetablesCartSection');
+            const customizeForm = document.getElementById('customizeForm');
+
+            fruitsContainer.innerHTML = products
+                .filter(p => p.category === 'fruit')
+                .map(product => productHTML(product))
+                .join('');
+
+            vegetablesContainer.innerHTML = products
+                .filter(p => p.category === 'vegetable')
+                .map(product => productHTML(product))
+                .join('');
+
+            if (isAdminMode) {
+                document.getElementById('addProductForm').style.display = 'block';
+                fruitsCartSection.style.display = 'none';
+                vegetablesCartSection.style.display = 'none';
+                customizeForm.style.display = 'block';
+            } else {
+                document.getElementById('addProductForm').style.display = 'none';
+                fruitsCartSection.style.display = 'block';
+                vegetablesCartSection.style.display = 'block';
+                customizeForm.style.display = 'none';
+            }
+
+            renderCart();
+        }
+
+        // स्लाइडर फंक्शनैलिटी
+        let slideIndex = 0;
+        const slides = document.getElementById('slides');
+        const slideCount = document.getElementsByClassName('slide').length;
+
+        function showSlides() {
+            slideIndex++;
+            if (slideIndex >= slideCount) slideIndex = 0;
+            slides.style.transform = `translateX(${-slideIndex * 100}%)`;
+            setTimeout(showSlides, 3000);
+        }
+
+        showSlides();
+
+        function productHTML(product) {
+            if (isAdminMode) {
+                return `
+                    <div class="product">
+                        <img src="${product.image}" alt="${product.name}">
+                        <h3>${product.name}</h3>
+                        <div class="edit-price" style="display: block;">
+                            <input type="number" id="price500g_${product.id}" value="${product.price500g}" placeholder="500g कीमत">
+                            <input type="number" id="price1kg_${product.id}" value="${product.price1kg}" placeholder="1kg कीमत">
+                            <input type="number" id="discount500g_${product.id}" value="${product.discount500g}" placeholder="500g डिस्काउंट कीमत">
+                            <input type="number" id="discount1kg_${product.id}" value="${product.discount1kg}" placeholder="1kg डिस्काउंट कीमत">
+                            <input type="file" id="image_${product.id}" accept="image/*" onchange="previewImage(${product.id})">
+                            <label><input type="checkbox" id="outOfStock_${product.id}" ${product.outOfStock ? 'checked' : ''}> आउट ऑफ स्टॉक</label>
+                            <button onclick="updatePriceAndImage(${product.id})">सहेजें</button>
+                        </div>
+                    </div>
+                `;
+            } else {
+                return `
+                    <div class="product">
+                        <img src="${product.image}" alt="${product.name}">
+                        <h3>${product.name}</h3>
+                        ${product.outOfStock ? '<p class="out-of-stock">आउट ऑफ स्टॉक</p>' : `
+                            <div class="weight-options">
+                                <button class="weight-btn" ${product.outOfStock ? 'disabled' : ''} onclick="addToCart(${product.id}, 0.5, ${product.discount500g > 0 ? product.discount500g : product.price500g})">
+                                    500g - ₹${product.discount500g > 0 ? `<s>${product.price500g}</s> ${product.discount500g}` : product.price500g}
+                                </button>
+                                <button class="weight-btn" ${product.outOfStock ? 'disabled' : ''} onclick="addToCart(${product.id}, 1, ${product.discount1kg > 0 ? product.discount1kg : product.price1kg})">
+                                    1kg - ₹${product.discount1kg > 0 ? `<s>${product.price1kg}</s> ${product.discount1kg}` : product.price1kg}
+                                </button>
+                            </div>
+                        `}
+                    </div>
+                `;
+            }
+        }
+
+        // छवि प्रीव्यू करें
+        function previewImage(productId) {
+            if (!isAdminMode) return;
+            const fileInput = document.getElementById(`image_${productId}`);
+            const file = fileInput.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const product = products.find(p => p.id === productId);
+                    product.image = e.target.result;
+                    renderProducts();
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // कीमत और छवि अपडेट करें
+        function updatePriceAndImage(productId) {
+            if (!isAdminMode) return;
+            const price500g = parseInt(document.getElementById(`price500g_${productId}`).value);
+            const price1kg = parseInt(document.getElementById(`price1kg_${productId}`).value);
+            const discount500g = parseInt(document.getElementById(`discount500g_${productId}`).value) || 0;
+            const discount1kg = parseInt(document.getElementById(`discount1kg_${productId}`).value) || 0;
+            const outOfStock = document.getElementById(`outOfStock_${productId}`).checked;
+
+            if (isNaN(price500g) || isNaN(price1kg) || price500g < 0 || price1kg < 0 || discount500g < 0 || discount1kg < 0) {
+                alert("कृपया वैध कीमत डालें!");
+                return;
+            }
+
+            const product = products.find(p => p.id === productId);
+            product.price500g = price500g;
+            product.price1kg = price1kg;
+            product.discount500g = discount500g;
+            product.discount1kg = discount1kg;
+            product.outOfStock = outOfStock;
+
+            const fileInput = document.getElementById(`image_${productId}`);
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    product.image = e.target.result;
+                    localStorage.setItem('products', JSON.stringify(products));
+                    alert(`${product.name} की कीमत, डिस्काउंट, और स्टॉक अपडेट की गई!`);
+                    renderProducts();
+                    showAdminDashboard();
+                };
+                reader.readAsDataURL(file);
+            } else {
+                localStorage.setItem('products', JSON.stringify(products));
+                alert(`${product.name} की कीमत, डिस्काउंट, और स्टॉक अपडेट की गई!`);
+                renderProducts();
+                showAdminDashboard();
+            }
+        }
+
+        // नया प्रोडक्ट जोड़ें
+        function addNewProduct() {
+            if (!isAdminMode) return;
+            const name = document.getElementById('newProductName').value;
+            const category = document.getElementById('newProductCategory').value;
+            const price500g = parseInt(document.getElementById('newPrice500g').value);
+            const price1kg = parseInt(document.getElementById('newPrice1kg').value);
+            const discount500g = parseInt(document.getElementById('newDiscount500g').value) || 0;
+            const discount1kg = parseInt(document.getElementById('newDiscount1kg').value) || 0;
+            const outOfStock = document.getElementById('newOutOfStock').checked;
+            const fileInput = document.getElementById('newProductImage');
+
+            if (!name || isNaN(price500g) || isNaN(price1kg) || price500g < 0 || price1kg < 0 || discount500g < 0 || discount1kg < 0 || !fileInput.files[0]) {
+                alert("कृपया सभी विवरण सही से भरें और छवि चुनें!");
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
+                const newProduct = {
+                    id: newId,
+                    name: name,
+                    category: category,
+                    image: e.target.result,
+                    price500g: price500g,
+                    price1kg: price1kg,
+                    discount500g: discount500g,
+                    discount1kg: discount1kg,
+                    outOfStock: outOfStock
+                };
+                products.push(newProduct);
+                localStorage.setItem('products', JSON.stringify(products));
+                alert(`${name} सफलतापूर्वक जोड़ा गया!`);
+                document.getElementById('newProductName').value = '';
+                document.getElementById('newPrice500g').value = '';
+                document.getElementById('newPrice1kg').value = '';
+                document.getElementById('newDiscount500g').value = '';
+                document.getElementById('newDiscount1kg').value = '';
+                document.getElementById('newOutOfStock').checked = false;
+                document.getElementById('newProductImage').value = '';
+                renderProducts();
+                showAdminDashboard();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // बैनर प्रीव्यू करें
+        function previewBanner() {
+            if (!isAdminMode) return;
+            const fileInput = document.getElementById('customBanner');
+            const file = fileInput.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('bannerImg').src = e.target.result;
+                    document.getElementById('bannerImg').style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // स्लाइड प्रीव्यू करें
+        function previewSlide(slideNum) {
+            if (!isAdminMode) return;
+            const fileInput = document.getElementById(`slideCustomImg${slideNum}`);
+            const file = fileInput.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById(`slideImg${slideNum}`).src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // UPI QR प्रीव्यू करें
+        function previewUpiQr() {
+            if (!isAdminMode) return;
+            const fileInput = document.getElementById('upiQrInput');
+            const file = fileInput.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('upiQrCode').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // बैंक QR प्रीव्यू करें
+        function previewBankQr() {
+            if (!isAdminMode) return;
+            const fileInput = document.getElementById('bankQrInput');
+            const file = fileInput.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('bankQrCode').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // कस्टमर फॉर्म दिखाएं
+        function showCustomerForm(type) {
+            if (type === 'login') {
+                document.getElementById('customerLoginForm').style.display = 'block';
+                document.getElementById('customerRegisterForm').style.display = 'none';
+            } else {
+                document.getElementById('customerLoginForm').style.display = 'none';
+                document.getElementById('customerRegisterForm').style.display = 'block';
+            }
+        }
+
+        // Google लॉगिन/रजिस्टर
+        function googleLogin() {
+            const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code&scope=email%20profile`;
+            window.location.href = googleAuthUrl;
+            // वास्तविक इंटीग्रेशन के लिए बैकएंड पर रीडायरेक्ट हैंडल करना होगा।
+        }
+
+        // कस्टमर रजिस्टर
+        function registerCustomer() {
+            const name = document.getElementById('registerName').value;
+            const mobile = document.getElementById('registerMobile').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+
+            if (!name || !mobile || !email || !password) {
+                alert("कृपया सभी विवरण भरें!");
+                return;
+            }
+
+            if (!/^[6-9]\d{9}$/.test(mobile)) {
+                alert("कृपया सही मोबाइल नंबर डालें!");
+                return;
+            }
+
+            if (!/\S+@\S+\.\S+/.test(email)) {
+                alert("कृपया सही जीमेल डालें!");
+                return;
+            }
+
+            if (customers.some(c => c.mobile === mobile || c.email === email)) {
+                alert("यह मोबाइल नंबर या जीमेल पहले से रजिस्टर्ड है!");
+                return;
+            }
+
+            const newCustomer = {
+                name,
+                mobile,
+                email,
+                password,
+                purchases: []
+            };
+            customers.push(newCustomer);
+            localStorage.setItem('customers', JSON.stringify(customers));
+            document.getElementById('customerRegisterForm').style.display = 'none';
+            alert("रजिस्ट्रेशन सफल! अब लॉगिन करें।");
+        }
+
+        // कस्टमर लॉगिन
+        function loginCustomer() {
+            const loginInput = document.getElementById('loginMobile').value;
+            const password = document.getElementById('loginPassword').value;
+
+            const customer = customers.find(c => (c.mobile === loginInput || c.email === loginInput) && c.password === password);
+            if (customer) {
+                currentCustomer = customer;
+                localStorage.setItem('currentCustomer', JSON.stringify(currentCustomer));
+                document.getElementById('customerLoginForm').style.display = 'none';
+                updateCustomerUI();
+                alert("लॉगिन सफल!");
+            } else {
+                alert("गलत मोबाइल/जीमेल या पासवर्ड!");
+            }
+        }
+
+        // कस्टमर लॉगआउट
+        function logoutCustomer() {
+            currentCustomer = null;
+            localStorage.removeItem('currentCustomer');
+            updateCustomerUI();
+            showSection('home');
+            alert("कस्टमर लॉगआउट हो गए!");
+        }
+
+        // PDF बिल जनरेट करें
+        function generatePDFBill(name, mobile, customerAddress, orderDetails, subtotal, subtotalAfterDiscount, discount, total, date) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            doc.setFontSize(16);
+            doc.text("फ्रेश मार्ट - बिल", 10, 10);
+            doc.setFontSize(12);
+            doc.text("दुकान का पता:", 10, 20);
+            doc.text(SHOP_ADDRESS, 10, 30);
+            doc.text("ग्राहक का नाम:", 10, 50);
+            doc.text(name, 10, 60);
+            doc.text("मोबाइल:", 10, 70);
+            doc.text(mobile, 10, 80);
+            doc.text("डिलीवरी पता:", 10, 90);
+            doc.text(customerAddress, 10, 100);
+            doc.text("ऑर्डर विवरण:", 10, 110);
+            doc.text(orderDetails, 10, 120, { maxWidth: 190 });
+            doc.text(`सबटोटल: ₹${subtotal}`, 10, 140);
+            if (discount > 0) {
+                doc.text(`डिस्काउंट (10%): -₹${discount}`, 10, 150);
+            }
+            doc.text(`डिलीवरी चार्ज: ₹${DELIVERY_CHARGE}`, 10, 160);
+            doc.text(`कुल राशि: ₹${total}`, 10, 170);
+            doc.text(`दिनांक: ${date}`, 10, 180);
+            const pdfData = doc.output('datauristring');
+            return pdfData;
+        }
+
+        // एडमिन डैशबोर्ड दिखाएं
+        function showAdminDashboard() {
+            const totalOrders = paymentRecords.length;
+            const totalRevenue = paymentRecords.reduce((sum, record) => sum + record.total, 0);
+
+            document.getElementById('totalOrders').textContent = totalOrders;
+            document.getElementById('totalRevenue').textContent = `₹${totalRevenue}`;
+
+            const customerRecords = document.getElementById('adminCustomerRecords');
+            const stockRecords = document.getElementById('adminStockRecords');
+
+            const recordsHTML = customers.flatMap(customer => 
+                customer.purchases.map(p => `
+                    <tr>
+                        <td>${customer.name}</td>
+                        <td>${customer.mobile}</td>
+                        <td>${p.orderDetails.replace(/\n/g, '<br>')}</td>
+                        <td>₹${p.total}</td>
+                        <td>${p.date}</td>
+                        <td>${p.address}</td>
+                        <td><a href="${p.billPDF}" download="bill_${customer.mobile}_${p.date}.pdf">डाउनलोड</a></td>
+                    </tr>
+                `)
+            ).join('');
+            customerRecords.innerHTML = recordsHTML;
+
+            const stockHTML = products.map(product => `
+                <tr>
+                    <td>${product.name}</td>
+                    <td>₹${product.price500g}</td>
+                    <td>₹${product.price1kg}</td>
+                    <td>${product.discount500g > 0 ? `₹${product.discount500g} (500g)` : ''} ${product.discount1kg > 0 ? `₹${product.discount1kg} (1kg)` : ''}</td>
+                    <td>${product.outOfStock ? 'आउट ऑफ स्टॉक' : 'उपलब्ध'}</td>
+                </tr>
+            `).join('');
+            stockRecords.innerHTML = stockHTML;
+        }
+
+        // कस्टमर डैशबोर्ड दिखाएं
+        function showCustomerDashboard() {
+            if (!currentCustomer) return;
+            const customerInfo = `नाम: ${currentCustomer.name}\nमोबाइल: ${currentCustomer.mobile}\nजीमेल: ${currentCustomer.email}`;
+            document.getElementById('customerDashInfo').textContent = customerInfo;
+
+            const purchaseHistory = currentCustomer.purchases.map(p => `
+                <tr>
+                    <td>${p.orderDetails.replace(/\n/g, '<br>')}</td>
+                    <td>₹${p.total}</td>
+                    <td>${p.date}</td>
+                    <td>${p.address}</td>
+                    <td>${p.paymentMethod === 'ऑनलाइन' ? 'पूरा हुआ' : 'पेंडिंग'}</td>
+                    <td><a href="${p.billPDF}" download="bill_${currentCustomer.mobile}_${p.date}.pdf">डाउनलोड</a></td>
+                </tr>
+            `).join('');
+            document.getElementById('customerPurchaseHistory').innerHTML = purchaseHistory;
+
+            const currentOrderHTML = cart.length > 0 ? cart.map(item => {
+                const weightText = item.weight === 0.5 ? '500g' : '1kg';
+                return `<p>${item.name} - ${weightText} x ${item.quantity} - ₹${item.price * item.quantity}</p>`;
+            }).join('') : '<p>कोई वर्तमान ऑर्डर नहीं</p>';
+            document.getElementById('currentOrderDetails').innerHTML = currentOrderHTML;
+        }
+
+        // कार्ट फंक्शन्स
+        function addToCart(productId, weight, price) {
+            if (isAdminMode) return;
+
+            if (!currentCustomer) {
+                alert("कृपया पहले लॉगिन या रजिस्टर करें।");
+                showCustomerForm('login');
+                return;
+            }
+
+            const product = products.find(p => p.id === productId);
+            if (product.outOfStock) {
+                alert(`${product.name} आउट ऑफ स्टॉक है!`);
+                return;
+            }
+            const existingItem = cart.find(item => item.id === productId && item.weight === weight);
+
+            if(existingItem) {
+                existingItem.quantity++;
+            } else {
+                cart.push({
+                    id: productId,
+                    name: product.name,
+                    weight: weight,
+                    price: price,
+                    quantity: 1
+                });
+            }
+            localStorage.setItem('cart', JSON.stringify(cart));
+            renderCart();
+            if (currentCustomer) showCustomerDashboard();
+        }
+
+        function renderCart() {
+            const cartContainerFruits = document.getElementById('cartItems');
+            const cartContainerVegetables = document.getElementById('cartItemsVegetables');
+            const subtotalElementFruits = document.getElementById('subtotal');
+            const discountElementFruits = document.getElementById('discount');
+            const totalElementFruits = document.getElementById('total');
+            const subtotalElementVegetables = document.getElementById('subtotalVegetables');
+            const discountElementVegetables = document.getElementById('discountVegetables');
+            const totalElementVegetables = document.getElementById('totalVegetables');
+
+            const cartHTML = cart.map(item => {
+                const weightText = item.weight === 0.5 ? '500g' : '1kg';
+                return `<div>${item.name} - ${weightText} x ${item.quantity} = ₹${item.price * item.quantity}<button onclick="removeFromCart(${item.id}, ${item.weight})">हटाएँ</button></div>`;
+            }).join('');
+
+            cartContainerFruits.innerHTML = cartHTML;
+            cartContainerVegetables.innerHTML = cartHTML;
+
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            let discount = 0;
+            if (currentCustomer && currentCustomer.purchases.length === 0) {
+                discount = subtotal * 0.1; // 10% discount on first order
+            }
+            const subtotalAfterDiscount = subtotal - discount;
+            const total = subtotalAfterDiscount + DELIVERY_CHARGE;
+
+            subtotalElementFruits.textContent = subtotal;
+            discountElementFruits.textContent = discount;
+            totalElementFruits.textContent = total;
+            subtotalElementVegetables.textContent = subtotal;
+            discountElementVegetables.textContent = discount;
+            totalElementVegetables.textContent = total;
+        }
+
+        function removeFromCart(productId, weight) {
+            if (isAdminMode) return;
+            cart = cart.filter(item => !(item.id === productId && item.weight === weight));
+            localStorage.setItem('cart', JSON.stringify(cart));
+            renderCart();
+            if (currentCustomer) showCustomerDashboard();
+        }
+
+        // एड्रेस फॉर्म
+        function showAddressForm() {
+            if(cart.length === 0) {
+                alert("कृपया पहले कुछ आइटम कार्ट में डालें!");
+                return;
+            }
+            document.getElementById('addressForm').style.display = 'block';
+            if (currentCustomer) {
+                document.getElementById('name').value = currentCustomer.name;
+                document.getElementById('mobile').value = currentCustomer.mobile;
+            }
+        }
+
+        // पेमेंट फॉर्म दिखाएं (यूनिक QR कोड के साथ)
+        function showPaymentForm() {
+            const name = document.getElementById('name').value;
+            const mobile = document.getElementById('mobile').value;
+            const address = document.getElementById('address').value;
+
+            if(!name || !mobile || !address) {
+                alert("कृपया पहले डिलीवरी का पता भरें!");
+                return;
+            }
+
+            if(!/^[6-9]\d{9}$/.test(mobile)) {
+                alert("कृपया सही मोबाइल नंबर डालें!");
+                return;
+            }
+
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            let discount = 0;
+            if (currentCustomer && currentCustomer.purchases.length === 0) {
+                discount = subtotal * 0.1; // 10% discount on first order
+            }
+            const subtotalAfterDiscount = subtotal - discount;
+            const total = subtotalAfterDiscount + DELIVERY_CHARGE;
+            document.getElementById('paymentTotal').textContent = total;
+
+            const orderId = `ORDER_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
+            const paymentLink = `upi://pay?pa=yourUPI@bank&pn=FreshMart&am=${total}&cu=INR&tn=${orderId}`;
+            QRCode.toDataURL(paymentLink, { width: 220, margin: 1 }, (err, url) => {
+                if (err) console.error(err);
+                document.getElementById('paymentQrCode').src = url;
+            });
+
+            document.getElementById('addressForm').style.display = 'none';
+            document.getElementById('paymentForm').style.display = 'block';
+        }
+
+        // पेमेंट कन्फर्म करें और बिल दिखाएँ
+        function confirmPayment() {
+            const name = document.getElementById('name').value;
+            const mobile = document.getElementById('mobile').value;
+            const address = document.getElementById('address').value;
+
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            let discount = 0;
+            if (currentCustomer && currentCustomer.purchases.length === 0) {
+                discount = subtotal * 0.1; // 10% discount on first order
+            }
+            const subtotalAfterDiscount = subtotal - discount;
+            const total = subtotalAfterDiscount + DELIVERY_CHARGE;
+            const orderDetails = cart.map(item => {
+                const weightText = item.weight === 0.5 ? '500g' : '1kg';
+                return `${item.name} - ${weightText} x ${item.quantity} - ₹${item.price * item.quantity}`;
+            }).join('\n');
+            const date = new Date().toLocaleString();
+
+            const billPDF = generatePDFBill(name, mobile, address, orderDetails, subtotal, subtotalAfterDiscount, discount, total, date);
+
+            const message = `*नया ऑर्डर (ऑनलाइन पेमेंट)!*\n\n*ग्राहक का नाम:* ${name}\n*मोबाइल:* ${mobile}\n*पता:* ${address}\n\n*ऑर्डर विवरण:*\n${orderDetails}\n\n*सबटोटल:* ₹${subtotal}\n*डिस्काउंट:* ₹${discount}\n*डिलीवरी चार्ज:* ₹${DELIVERY_CHARGE}\n*कुल राशि:* ₹${total}\n*दिनांक:* ${date}\n\n*बिल डाउनलोड करें:* ${billPDF}`;
+
+            const whatsappUrl = `https://wa.me/917589967294?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+
+            document.getElementById('billDetails').textContent = `दुकान का पता:\n${SHOP_ADDRESS}\n\nग्राहक का नाम: ${name}\nमोबाइल: ${mobile}\nपता: ${address}\n\nऑर्डर विवरण:\n${orderDetails}\n\nसबटोटल: ₹${subtotal}\nडिस्काउंट: ₹${discount}\nडिलीवरी चार्ज: ₹${DELIVERY_CHARGE}\nकुल राशि: ₹${total}\nदिनांक: ${date}`;
+            document.getElementById('paymentForm').style.display = 'none';
+            document.getElementById('billForm').style.display = 'block';
+
+            const record = { orderDetails, total, date, paymentMethod: "ऑनलाइन", address, billPDF };
+            paymentRecords.push(record);
+            localStorage.setItem('paymentRecords', JSON.stringify(paymentRecords));
+
+            if (currentCustomer) {
+                currentCustomer.purchases.push(record);
+                const customerIndex = customers.findIndex(c => c.mobile === currentCustomer.mobile);
+                customers[customerIndex] = currentCustomer;
+                localStorage.setItem('customers', JSON.stringify(customers));
+                localStorage.setItem('currentCustomer', JSON.stringify(currentCustomer));
+                showCustomerDashboard();
+            }
+
+            cart = [];
+            localStorage.setItem('cart', JSON.stringify(cart));
+            renderCart();
+        }
+
+        // व्हाट्सएप्प ऑर्डर (कैश ऑन डिलीवरी)
+        function placeOrder() {
+            const name = document.getElementById('name').value;
+            const mobile = document.getElementById('mobile').value;
+            const address = document.getElementById('address').value;
+
+            if(!name || !mobile || !address) {
+                alert("कृपया सभी विवरण भरें");
+                return;
+            }
+
+            if(!/^[6-9]\d{9}$/.test(mobile)) {
+                alert("कृपया सही मोबाइल नंबर डालें");
+                return;
+            }
+
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            let discount = 0;
+            if (currentCustomer && currentCustomer.purchases.length === 0) {
+                discount = subtotal * 0.1; // 10% discount on first order
+            }
+            const subtotalAfterDiscount = subtotal - discount;
+            const total = subtotalAfterDiscount + DELIVERY_CHARGE;
+            const orderDetails = cart.map(item => {
+                const weightText = item.weight === 0.5 ? '500g' : '1kg';
+                return `${item.name} - ${weightText} x ${item.quantity} - ₹${item.price * item.quantity}`;
+            }).join('\n');
+            const date = new Date().toLocaleString();
+
+            const billPDF = generatePDFBill(name, mobile, address, orderDetails, subtotal, subtotalAfterDiscount, discount, total, date);
+
+            const message = `*नया ऑर्डर (कैश ऑन डिलीवरी)!*\n\n*ग्राहक का नाम:* ${name}\n*मोबाइल:* ${mobile}\n*पता:* ${address}\n\n*ऑर्डर विवरण:*\n${orderDetails}\n\n*सबटोटल:* ₹${subtotal}\n*डिस्काउंट:* ₹${discount}\n*डिलीवरी चार्ज:* ₹${DELIVERY_CHARGE}\n*कुल राशि:* ₹${total}\n*दिनांक:* ${date}\n\n*बिल डाउनलोड करें:* ${billPDF}`;
+
+            const whatsappUrl = `https://wa.me/917589967294?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+
+            if (currentCustomer) {
+                const record = { orderDetails, total, date, paymentMethod: "कैश ऑन डिलीवरी", address, billPDF };
+                currentCustomer.purchases.push(record);
+                const customerIndex = customers.findIndex(c => c.mobile === currentCustomer.mobile);
+                customers[customerIndex] = currentCustomer;
+                localStorage.setItem('customers', JSON.stringify(customers));
+                localStorage.setItem('currentCustomer', JSON.stringify(currentCustomer));
+                showCustomerDashboard();
+            }
+
+            cart = [];
+            localStorage.setItem('cart', JSON.stringify(cart));
+            document.getElementById('addressForm').style.display = 'none';
+            renderCart();
+            alert("ऑर्डर सफलतापूर्वक पूरा हुआ! डिलीवरी पर पेमेंट करें।");
+        }
+
+        // Google लोकेशन परमिशन फंक्शन
+        function requestLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const latitude = position.coords.latitude;
+                        const longitude = position.coords.longitude;
+                        const locationUrl = `https://www.google.com/maps?q=${latitude},${longitude}`;
+                        document.getElementById('address').value = `मेरा स्थान: ${locationUrl}`;
+                    },
+                    (error) => {
+                        alert("लोकेशन प्राप्त करने में त्रुटि: कृपया मैन्युअल रूप से पता डालें।");
+                    }
+                );
+            } else {
+                alert("आपका ब्राउज़र लोकेशन सपोर्ट नहीं करता। कृपया मैन्युअल रूप से पता डालें।");
+            }
+        }
+
+        // एडमिन फॉर्म दिखाएं
+        function showAdminForm() {
+            document.getElementById('adminForm').style.display = 'block';
+        }
+
+        // एडमिन वेरिफिकेशन
+        function verifyAdmin() {
+            const password = document.getElementById('adminPassword').value;
+            if (password === ADMIN_PASSWORD) {
+                isAdminMode = true;
+                document.getElementById('adminForm').style.display = 'none';
+                document.getElementById('adminBtn').style.display = 'none';
+                document.getElementById('logoutBtn').style.display = 'inline-block';
+                updateCustomerUI();
+                renderProducts();
+                alert("एडमिन मोड सक्रिय! अब आप डैशबोर्ड से सभी डेटा देख सकते हैं।");
+            } else {
+                alert("गलत पासवर्ड!");
+            }
+        }
+
+        // एडमिन लॉगआउट
+        function logoutAdmin() {
+            isAdminMode = false;
+            document.getElementById('adminBtn').style.display = 'inline-block';
+            document.getElementById('logoutBtn').style.display = 'none';
+            updateCustomerUI();
+            renderProducts();
+            showSection('home');
+            alert("एडमिन मोड से लॉगआउट हो गए!");
+        }
+
+        // इनिशियल रेंडर
+        loadData();
+        renderProducts();
+        showSection('home');
+    </script>
+</body>
+</html>
